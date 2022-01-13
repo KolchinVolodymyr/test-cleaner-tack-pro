@@ -1,6 +1,5 @@
 'use strict';
 
-// const MODEL_NAME = 'worksites';
 const Worksites = require('../worksites/schema');
 const Client = require('../client/schema');
 const Job = require("../job/schema");
@@ -26,20 +25,17 @@ module.exports = [
                         clientWorksites.push(index);
                     })
                 })
-                // console.log('clientWorksites', clientWorksites);
                 await Promise.all(promises);
 
                 const dataJob = [];
                 const promisesClientWorksites = clientWorksites.map(async (el) => {
                     const promisesWorksitesJob = el.WorksitesItem.job.items.map(async (id)=>{
                         const job = await Job.findById(id.JobId);
-                        // console.log('id', id);
-                        // console.log('job', job);
+);
                         const employees = await Employees.findById(job.employeesID);
                         const worksites = await Worksites.findById(job.worksiteID);
                         const client = await Client.findById(worksites.clientID);
-                        // console.log('client', client);
-                        // dataJob.push(job);
+
                         dataJob.push({
                             employees: employees,
                             worksites: worksites,
@@ -52,6 +48,25 @@ module.exports = [
                 await Promise.all(promisesClientWorksites);
 
                 return h.response({dataJob, client, clientWorksites}).code(200).takeover();
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    },
+    {
+        method: 'GET',
+        path: `/monthlyExpenseReport`,
+        options: {
+            auth: {
+                mode: 'try',
+                strategy: 'session60'
+            }
+        },
+        handler: async function (request, h) {
+            try {
+                const employees = await Employees.find();
+                const job = await Job.find();
+                return h.response({employees, job}).code(200).takeover();
             } catch (e) {
                 console.log(e);
             }
