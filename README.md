@@ -10,8 +10,6 @@ This is intended to be used as a replacement for existing server-side view solut
 Email: admin@gmail.com
 Password: 12345
 ```
-A demo of the app can be found on this [Application](https://limitless-fjord-37037.herokuapp.com) v1.0.0
-
 
 # Server
     "npm run server"
